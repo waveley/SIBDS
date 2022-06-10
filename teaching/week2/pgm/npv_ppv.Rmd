@@ -1,0 +1,85 @@
+---
+title: "Sensitivity, Specificity, Prevalence Exploration"
+author: "Waveley Qiu (wq2162)"
+date: '2022-06-07'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+
+# set knitr defaults
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  fig.width = 6,
+  fig.asp   = .6,
+  out.width = "90%",
+  cache = TRUE
+)
+
+# set theme defaults
+theme_set(
+  theme_bw() +
+    theme(
+      legend.position = "bottom",
+      plot.title    = element_text(hjust = 0.5),
+      plot.subtitle = element_text(hjust = 0.5),
+      plot.caption  = element_text(hjust = 0.0)
+    )
+)
+
+# set color scale defaults
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill   = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete   = scale_fill_viridis_d
+```
+
+
+```{r}
+params <- 
+  c(
+    sens = 0.9,
+    spec = 0.8,
+    prev = 0.3
+  )
+
+npv <- function(sens = params[[1]], spec = params[[2]], prev = params[[3]]) {
+  num <- spec*(1 - prev)
+  denom <- spec*(1 - prev) + (1 - sens)*prev
+  out <- num/denom
+  return(out)
+}
+
+ppv <- function(sens = params[[1]], spec = params[[2]], prev = params[[3]]){
+  num <- sens*(prev)
+  denom <- sens*(prev) + (1 - spec)*(1 - prev)
+  out <- num/denom
+  return(out)
+}
+
+range <- seq(0, 1, 0.01)
+
+npv_values <- tibble(
+  trial = c(rep("changing sens", length(range)), rep("changing spec", length(range)), rep("changing prev", length(range))),
+  vals = rep(range, 3),
+  npv = c(npv(sens = range), npv(spec = range), npv(prev = range))
+)
+
+ppv_values <- tibble(
+  trial = c(rep("changing sens", length(range)), rep("changing spec", length(range)), rep("changing prev", length(range))),
+  vals = rep(range, 3),
+  ppv = c(ppv(sens = range), ppv(spec = range), ppv(prev = range))
+)
+
+npv_values %>% ggplot(aes(x = vals, y = npv, col = trial)) + geom_line() + 
+  labs(x = "Value Range", y = "NPV", col = "Changing Element", title = "NPV by Changing Element")
+
+ppv_values %>% ggplot(aes(x = vals, y = ppv, col = trial)) + geom_line() + labs(x = "Value Range", y = "PPV", col = "Changing Element", title = "PPV by Changing Element")
+```
+

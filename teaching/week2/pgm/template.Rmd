@@ -1,0 +1,88 @@
+---
+title: "Simple document"
+author: Waveley Qiu
+date: 2021-09-16
+output: github_document
+---
+
+```{r setup, echo=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+
+I'm an R Markdown document! 
+
+# Section 1
+
+Here's a **code chunk** that samples from 
+a _normal distribution_:
+
+```{r}
+samp = rnorm(100)
+length(samp)
+```
+
+# Section 2
+
+I can take the mean of the sample, too!
+The mean is `r mean(samp)`.
+
+# Section 3
+
+Let's write a new code chunk.
+
+This code chunk imports the `tidyverse`, creates a data frame and makes a histogram.
+
+```{r new_code_chunk, collapse=TRUE, message=FALSE}
+set.seed(1234)
+
+plot_df = 
+  tibble(
+    x = rnorm(1000, sd = 0.5),
+    y = 1 + 2*x + rnorm(1000),
+    y_quad = 1 + 2 * x^2 + rnorm(1000)
+  )
+plot_df
+
+ggplot(plot_df, aes(x = x)) + geom_histogram()
+
+ggplot(plot_df,aes(x = x, y = y)) + geom_point()
+
+ggsave("output/scatterplot.pdf", height = 4, width = 6)
+```
+
+# Section 4
+
+This is the learning assessment from the course website.
+
+```{r learning_assessment, collapse=TRUE}
+set.seed(20210916)
+plot_df2 <-
+  tibble(
+    vec_rand = rnorm(500, mean = 1),
+    vec_log = vec_rand > 0,
+    vec_absnum = abs(vec_rand)
+  )
+
+ggplot(data = plot_df2, aes(x = vec_absnum)) + geom_histogram() + theme_minimal()
+
+round(median(plot_df2$vec_absnum), 2)
+```
+
+The rounded median of the absolute values of the random sample from the normal distribution is `r round(median(plot_df2$vec_absnum), 2)`.
+
+
+# YAML header options for html_document output
+output:
+    html_document:
+      toc: TRUE
+      toc_float: TRUE
+      code_folding: hide
+      
+Specifying folder: rmarkdown::render(input="first_rmd.RMD", output_format="html_document", output_file="output/first_rmd.html")
+
+```{r, echo=FALSE}
+rmarkdown::render(input="first_rmd.RMD", output_format="html_document", output_file="output/first_rmd.html")
+```
+
+

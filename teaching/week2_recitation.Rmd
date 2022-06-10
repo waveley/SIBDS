@@ -1,0 +1,18 @@
+---
+title: "Week 2 DS Practice Problems"
+author: "SIBDS @ Columbia"
+date: '2022-06-10'
+output: pdf_document
+---
+
+1.	Create a new R project and name it something related to `Week 2 DS Recitation`.
+
+2.	Create a new R script within that project called `week2_DS_distributions`.
+
+>a.	Using the code at the end of Unit 3, repeat questions 5 and 6 of Recitation Unit 3, but using R this time.
+
+3.	Create a new R script within that project called `week2_DS_screening`.
+
+>a.	Use the data in Recitation Unit 3, Problem 3. Write code to compute the PPV and NPV of the new screening test when the prevalence of disease is 0.10. Write your code in such a way that you can just update the values of sensitivity, specificity, and prevalence to get the revised PPV and NPV.
+
+>b.	Check that your code is flexible, by recomputing the PPV and NPV when the prevalence is 0.20 instead.
