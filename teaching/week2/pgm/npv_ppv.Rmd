@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   fig.align = "center",
   fig.width = 6,
-  fig.asp   = .6,
+  fig.asp   = .8,
   out.width = "90%",
   cache = TRUE
 )
@@ -49,14 +49,18 @@ params <-
     prev = 0.3
   )
 
-npv <- function(sens = params[[1]], spec = params[[2]], prev = params[[3]]) {
+npv <- function(sens = params[[1]], 
+                spec = params[[2]], 
+                prev = params[[3]]) {
   num <- spec*(1 - prev)
   denom <- spec*(1 - prev) + (1 - sens)*prev
   out <- num/denom
   return(out)
 }
 
-ppv <- function(sens = params[[1]], spec = params[[2]], prev = params[[3]]){
+ppv <- function(sens = params[[1]], 
+                spec = params[[2]], 
+                prev = params[[3]]){
   num <- sens*(prev)
   denom <- sens*(prev) + (1 - spec)*(1 - prev)
   out <- num/denom
@@ -66,20 +70,41 @@ ppv <- function(sens = params[[1]], spec = params[[2]], prev = params[[3]]){
 range <- seq(0, 1, 0.01)
 
 npv_values <- tibble(
-  trial = c(rep("changing sens", length(range)), rep("changing spec", length(range)), rep("changing prev", length(range))),
+  trial = c(rep("changing sens", length(range)), 
+            rep("changing spec", length(range)), 
+            rep("changing prev", length(range))),
   vals = rep(range, 3),
-  npv = c(npv(sens = range), npv(spec = range), npv(prev = range))
+  npv = c(npv(sens = range), 
+          npv(spec = range), 
+          npv(prev = range))
 )
 
 ppv_values <- tibble(
-  trial = c(rep("changing sens", length(range)), rep("changing spec", length(range)), rep("changing prev", length(range))),
+  trial = c(rep("changing sens", length(range)), 
+            rep("changing spec", length(range)), 
+            rep("changing prev", length(range))),
   vals = rep(range, 3),
-  ppv = c(ppv(sens = range), ppv(spec = range), ppv(prev = range))
+  ppv = c(ppv(sens = range), 
+          ppv(spec = range), 
+          ppv(prev = range))
 )
+```
 
-npv_values %>% ggplot(aes(x = vals, y = npv, col = trial)) + geom_line() + 
-  labs(x = "Value Range", y = "NPV", col = "Changing Element", title = "NPV by Changing Element")
+```{r, echo=FALSE}
+npv_values %>% 
+  ggplot(aes(x = vals, y = npv, col = trial)) + 
+  geom_line() + 
+  labs(x = "Value Range", 
+       y = "NPV", 
+       col = "Changing Element", 
+       title = "NPV by Changing Element")
 
-ppv_values %>% ggplot(aes(x = vals, y = ppv, col = trial)) + geom_line() + labs(x = "Value Range", y = "PPV", col = "Changing Element", title = "PPV by Changing Element")
+ppv_values %>% 
+  ggplot(aes(x = vals, y = ppv, col = trial)) + 
+  geom_line() + 
+  labs(x = "Value Range", 
+       y = "PPV", 
+       col = "Changing Element", 
+       title = "PPV by Changing Element")
 ```
 
