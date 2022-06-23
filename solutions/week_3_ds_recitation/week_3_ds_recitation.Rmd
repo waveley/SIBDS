@@ -1,0 +1,60 @@
+---
+title: "Week 3 DS Recitation"
+author: "Waveley Qiu & Tucker Morgan"
+date: '2022-06-17'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Writing with Data
+
+### Part 1: Named Code Chunk
+
+```{r}
+df1 <- tibble(
+  rand_vec = ,
+  log_vec = ,
+  num_vec = 
+)
+```
+
+### Part 2: Histogram
+
+### Part 3: In-line Median
+
+### Part 4: Mean, Median, and SD of Random Sample
+
+## Data Import
+
+### Part 1: Absolute and Relative Paths
+
+```{r}
+pups <- read_csv("data/FAS_pups.csv") %>% 
+  janitor::clean_names()
+
+pups <- read_csv("C:/Users/14088/Documents/R/RWorkspace/SIBDS/solutions/week_3_ds_recitation/data/FAS_pups.csv") %>%
+  janitor::clean_names()
+```
+
+### Part 2: Column Parsing
+
+```{r}
+pups <- read_csv("data/FAS_pups.csv", col_types = "cccccc") %>% 
+  janitor::clean_names()
+```
+
+### Part 3: tidyverse vs. Base R
+
+```{r}
+pups_dplyr <- read_csv("data/FAS_pups.csv") %>% 
+  janitor::clean_names()
+
+pups_baser <- read.csv("data/FAS_pups.csv") 
+```
+
+
+

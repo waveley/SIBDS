@@ -27,7 +27,7 @@ output: pdf_document
 
 2. Produce a histogram of the absolute value variable just created. 
 
-3. Add an inline summary giving the median value rounded to two decimal places. 
+3. Add an inline summary giving the median value (of the absolute value variable) rounded to two decimal places. 
 
 4. After the previous code chunk, write a bulleted list giving the mean, median, and standard deviation of the original random sample
 
@@ -47,7 +47,9 @@ output: pdf_document
 
 ## Data Manipulation
 
-1. In the `pups` data, select the columns containing litter number, sex, and PD ears. Then, do the following:
+1. In the `pups` data, select the columns containing litter number, sex, and PD ears. 
+
+2. Perform the following mutations on the `pups` dataset:
 
     a. Filter to include only pups with sex 1
 
