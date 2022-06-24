@@ -1,5 +1,5 @@
 ---
-title: "Tidyverse Challenge Problems"
+title: "Challenge Problem Set 1"
 author: "SIBDS @ Columbia"
 date: '2022-06-24'
 output: pdf_document
@@ -7,15 +7,15 @@ output: pdf_document
 
 ## Getting Started
 
-1. Create a new project in your RWorkspace named `tidyverse_challenge`, or something similar. 
+1. Create a new project in your RWorkspace named `challenge_set_1`, or something similar. 
 
-2. Click into the RProject and create a new RMarkdown document within the project named `tidyverse_challenge`, or something similar. 
+2. Click into the RProject and create a new RMarkdown document within the project named `challenge_set_1`, or something similar. 
 
 3. Modify the YAML header to your preference and knit the RMarkdown document to make sure it runs as expected.
 
 4. Run this line of code in your console to get the datasets you need:
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
 devtools::install_github("p8105/p8105.datasets")
 ```
 
