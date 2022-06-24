@@ -1,0 +1,260 @@
+---
+title: "visualization_pt1"
+author: "Waveley Qiu (wq2162)"
+date: "2022=06=23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggridges)
+library(hexbin)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = 0.6,
+  out.width = "90%",
+  cache = TRUE 
+)
+```
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USC00519397", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USC00519397 = "Waikiki_HA",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+## Basic Scatterplot
+
+First, a basic plot.
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax)) +
+  geom_point() +
+  theme_minimal()
+```
+
+Now, we can try using pipes.
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point() +
+  theme_minimal()
+```
+
+Sometimes, we want to save the ggplot we've created into its own object and modify it as needed.
+
+```{r}
+plot_weather <- 
+  weather_df %>%
+  ggplot(aes(x = tmin, y = tmax))
+
+plot_weather + 
+  geom_point() +
+  theme_minimal()
+```
+
+## Advanced Scatterplots
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(colour = name)) +
+  theme_minimal()
+```
+
+Let's make this a little fancier.
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(colour = name), alpha = 0.5) +
+  theme_minimal() +
+  geom_smooth(se = FALSE)
+```
+
+We'll keep making things more complicated (but cool!).
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.5) +
+  theme_minimal() +
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+```
+
+Now, let's look at seasonality (and precipitation).
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point(aes(size = prcp), alpha = 0.5) +
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+## Odds and Ends
+'
+```{r}
+weather_df %>%
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_smooth(se = FALSE) +
+  theme_minimal()
+```
+
+Now a hexagon plot:
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex() +
+  theme_minimal()
+```
+
+## Univariate Plots
+
+We will just be looking at the distribution of one variable.
+
+First up is the histogram.
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax)) + 
+  geom_histogram() +
+  theme_minimal()
+```
+
+We can make a slightly better version of the histogram above.
+
+```{r}
+# with dodge
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) +
+  geom_histogram(position = "dodge", binwidth = 2) +
+  theme_minimal()
+
+# without dodge
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) +
+  geom_histogram(binwidth = 2) +
+  theme_minimal()
+```
+
+Density plots are sometimes easier to understand than histograms.
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax, fill = name)) +
+  #geom_density(alpha = 0.4, adjust = 0.5, aes(color = name)) +
+  #geom_density(alpha = 0.4, adjust = 0.5, aes(color = "blue")) + <- this didn't work as expected
+  geom_density(alpha = 0.4, adjust = 0.5, aes(color = name)) +
+  geom_rug(aes(color = name)) +
+  theme_minimal()
+```
+
+We can also make boxplots.
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = name, y = tmax)) +
+  geom_boxplot() +
+  theme_minimal()
+```
+
+Violin plots are sometimes nice (but people sometimes complain that they don't look like violins).
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = name, y = tmax)) +
+  geom_violin(aes(fill = name), alpha = 0.5) +
+  stat_summary(fun = "median", color = "blue") +
+  theme_minimal()
+```
+
+```{r}
+weather_df %>%
+  ggplot(aes(x = tmax, y = name)) +
+  geom_density_ridges(scale = 0.85) +
+  theme_minimal()
+```
+
+
+## Saving and Embedding Plots
+
+You will, on occasion, need to save a plot to a specific file. Don't use the built-in "Export" button (this makes your work un-reproducible)! Instead, do this:
+
+```{r}
+weather_plot <- 
+  weather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.5) + 
+  theme_minimal()
+
+ggsave("weather_plot.pdf", weather_plot, width = 8, height = 5)
+```
+
+Using these options when embedding figures should be fine most of the time. 
+
+```{r}
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = 0.6,
+  out.width = "90%",
+  cache = TRUE 
+)
+```
+
+You can fiddle around with these values depending on what you want your output file to look like. But sometimes this might not be worth your time.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

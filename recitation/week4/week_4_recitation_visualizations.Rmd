@@ -1,0 +1,106 @@
+---
+title: "week_4_visualization"
+author: "Waveley Qiu (wq2162)"
+date: '2022-06-24'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggthemes)
+library(ggridges)
+
+# set knitr defaults
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  fig.width = 8,
+  fig.asp   = .8,
+  out.width = "90%",
+  cache = TRUE
+)
+
+# set theme defaults
+theme_set(
+  theme_bw() +
+    theme(
+      legend.position = "bottom",
+      plot.title    = element_text(hjust = 0.5),
+      plot.subtitle = element_text(hjust = 0.5),
+      plot.caption  = element_text(hjust = 0.0)
+    )
+)
+
+# set color scale defaults
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill   = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete   = scale_fill_viridis_d
+```
+
+
+## Data Visualizations
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USC00519397", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USC00519397 = "Waikiki_HA",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+### Part 1
+
+```{r}
+weather_df %>%
+  filter(name == "CentralPark_NY") %>%
+  mutate(
+    tmin = tmin * 9/5 + 32,
+    tmax = tmax * 9/5 + 32
+  ) %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point() +
+  geom_smooth(se = FALSE)
+```
+
+### Part 2
+```{r}
+ggplot(weather_df) +
+  geom_point(aes(x = tmax, y = tmin), color = "blue")
+
+ggplot(weather_df) + 
+  geom_point(aes(x = tmax, y = tmin, color = "blue"))
+```
+
+### Part 3
+```{r}
+weather_gg <- weather_df %>%
+  ggplot(aes(x = prcp, fill = name, alpha = 0.5)) 
+
+weather_gg +
+  geom_histogram()
+
+weather_gg + 
+  geom_density()
+
+weather_gg + 
+  geom_boxplot()
+
+weather_gg +
+  geom_density_ridges(aes(y = name))
+```
+
